@@ -4,6 +4,8 @@ const multer = require("multer");
 const connectDB = require("./db");
 const jwt = require("jsonwebtoken");
 const storage = multer.memoryStorage();
+const userModel = require("./userModel");
+const paperModel = require("./paperRes");
 
 require("dotenv").config();
 
@@ -81,7 +83,9 @@ app.post("/register", async(req, res)=> {
         })
 
     }catch(error){
+        console.log(error.message);
         return res.status(500).json({
+            error: error.message,
             message: "Register error"
         })
     }
@@ -98,7 +102,7 @@ app.post("/login",async(req,res) => {
         }
 
         const exists = await userModel.findOne({
-            userEmail: email.toLowerCase.trim()
+            userEmail: email.toLowerCase().trim()
         });
 
         if(!exists){
@@ -106,7 +110,7 @@ app.post("/login",async(req,res) => {
                 message: "user dosen't exists"
             })
         }
-        const isPasswordValid = await bcrypt.compare(exists.userPassword,password);
+        const isPasswordValid = await bcrypt.compare(password,exists.userPassword);
 
         if(!isPasswordValid){
             return res.status(401).json({
