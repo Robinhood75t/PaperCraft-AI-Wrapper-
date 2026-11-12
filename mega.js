@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const multer = require("multer");
@@ -6,8 +8,8 @@ const jwt = require("jsonwebtoken");
 const storage = multer.memoryStorage();
 const userModel = require("./userModel");
 const paperModel = require("./paperRes");
+const authMiddleware = require("./authMiddleware");
 
-require("dotenv").config();
 
 const app = express();
 
@@ -43,7 +45,7 @@ async function getGemini(){
         const { GoogleGenAI } = await import("@google/genai");
 
         gemini = new GoogleGenAI({
-            apikey: process.env.GOOGLE_API_KEY
+            apiKey: process.env.GOOGLE_API_KEY
         });
     }
     return gemini;
@@ -144,7 +146,7 @@ app.post("/paper-test",async(req, res)=> {
 
 console.log("registering paper route....");
 
-app.post("/papers",uploads.single("paper"),async(req, res) => {
+app.post("/papers",authMiddleware,uploads.single("paper"),async(req, res) => {
     console.log("paper router hits");
     try{
         console.log("inside try");
@@ -221,7 +223,7 @@ app.post("/papers",uploads.single("paper"),async(req, res) => {
         console.log("data extract kar liya");
 
         const paperJob = await paperModel.create({
-            status: "review",
+            userId: req.user.id,
             extractedQuestions: extractedData
         })
 
