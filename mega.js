@@ -216,7 +216,7 @@ app.post("/papers",uploads.single("paper"),async(req, res) => {
         const extractedData = JSON.parse(response.text);
         console.log("data extract kar liya");
 
-        const paperJob = await paperJob.create({
+        const paperJob = await paperModel.create({
             status: "review",
             extractedQuestions: extractedData
         })
