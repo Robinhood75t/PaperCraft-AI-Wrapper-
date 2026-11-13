@@ -41,6 +41,7 @@ const uploads = multer({
 
 let gemini;
 async function getGemini(){
+    console.log("inside GetGemini function");
     if(!gemini){
         const { GoogleGenAI } = await import("@google/genai");
 
