@@ -242,13 +242,6 @@ app.post("/papers",authMiddleware,uploads.single("paper"),async(req, res) => {
     }
 });
 
-app.post("/api/AICraft", async(req, res) => {
-    try{
-
-    }catch(err){
-
-    }
-});
 
 const PORT = process.env.PORT || 8000;
 
